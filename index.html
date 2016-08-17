@@ -3,13 +3,18 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Bubble Shooter</title>
-	<link href="_css/main.css" rel="stylesheet">
-	<link href="_css/game.css" rel="stylesheet">
-	<script src="_js/toast.js"></script>
-	<script src="_js/modernizr.js"></script>
-	<script src="_js/jquery-3.1.0.js"></script>
+	<script src="_js/headjs/dist/1.0.0/head.js"></script>
 	<script>
-		function start() {
+		head.load([
+			{jquery : "_js/jquery-3.1.0.js"},
+			{modernizr : "_js/modernizr.js"}
+		]);
+		head.load(
+			"_css/main.css",
+			"_css/game.css"
+		);
+		
+		/*function start() {
 			toast(
 				'_js/game.js',
 				'_js/ui.js',
@@ -24,9 +29,9 @@
 					})
 				}
 			);
-		}
+		}*/
 		
-		window.onload = start;
+		//window.onload = start;
 	</script>
 </head>
 <body>
@@ -47,5 +52,37 @@
 			</div>
 		</div>
 	</div>
+	
+	<script>
+		head.ready(["jquery", "modernizr"], function () {
+			head.load([
+				'_js/game.js',
+				'_js/ui.js',
+				'_js/bubble.js',
+				'_js/board.js',
+				'_js/collision-detector.js',
+				'_js/jquery.kaboom.js'
+			],
+			function () {
+				$(function () {
+					var game = new BubbleShoot.Game();
+					game.init();
+				});
+			});
+			
+			head.test({
+				test : Modernizr.canvas,
+				success : ["_js/renderer.js", "_js/sprite.js"],
+				callback : function () {
+					if(Modernizr.canvas){
+						console.log("Canvas Support Detected!");
+					}else{
+						console.log("Canvas Support Not Detected!");
+					}
+				}
+			});
+			
+		});
+	</script>
 </body>
 </html>

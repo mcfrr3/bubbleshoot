@@ -95,3 +95,23 @@ body{
 	color: #000;
 	text-align: center;
 }
+.button{
+	-webkit-transition: background-color .3s ease-in-out,
+		transform .2s ease-in-out;
+	-moz-transition: background-color .3s ease-in-out,
+		transform .2s ease-in-out;
+	-ms-transition: background-color .3s ease-in-out,
+		transform .2s ease-in-out;
+	-o-transition: background-color .3s ease-in-out,
+		transform .2s ease-in-out;
+	transition: background-color .3s ease-in-out,
+		transform .2s ease-in-out;
+}
+.button:hover{
+	background-color: #900;
+	-webkit-transform: scale(1.1);
+	-moz-transform: scale(1.1);
+	-ms-transform: scale(1.1);
+	-o-transform: scale(1.1);
+	transform: scale(1.1);
+}

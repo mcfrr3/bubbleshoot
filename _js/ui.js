@@ -34,22 +34,36 @@ BubbleShoot.ui = (function ($) {
 			return angle;
 		},
 		fireBubble : function (bubble, coords, duration) {
-			bubble.getSprite().animate({
-				left : coords.x - ui.BUBBLE_DIMS/2,
-				top : coords.y - ui.BUBBLE_DIMS/2
-			},
-			{
-				duration : duration,
-				easing : "linear",
-				complete : function () {
-					if(bubble.getRow() !== null){
-						bubble.getSprite().css({
-							left : bubble.getCoords().left - ui.BUBBLE_DIMS / 2,
-							top : bubble.getCoords().top - ui.BUBBLE_DIMS / 2
-						});
-					}
+			var complete = function () {
+				if(bubble.getRow() !== null){
+					bubble.getSprite().css(Modernizr.prefixed("transition"),"");
+					bubble.getSprite().css({
+						left : bubble.getCoords().left - ui.BUBBLE_DIMS / 2,
+						top : bubble.getCoords().top - ui.BUBBLE_DIMS / 2
+					});
 				}
-			});
+			};
+
+			if(Modernizr.csstransitions){
+				bubble.getSprite().css(Modernizr.prefixed("transition"), "all " +
+					(duration / 1000) + "s linear");
+				bubble.getSprite().css({
+					left : coords.x - ui.BUBBLE_DIMS / 2,
+					top : coords.y - ui.BUBBLE_DIMS / 2
+				});
+
+				setTimeout(complete, duration);
+			}else{
+				bubble.getSprite().animate({
+						left : coords.x - ui.BUBBLE_DIMS/2,
+						top : coords.y - ui.BUBBLE_DIMS/2
+					},
+					{
+						duration : duration,
+						easing : "linear",
+						complete : complete
+					});
+			}
 		},
 		drawBoard : function (board) {
 			var rows = board.getRows();
