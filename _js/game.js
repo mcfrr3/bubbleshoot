@@ -5,25 +5,57 @@ BubbleShoot.Game = (function ($) {
 		var curBubble;
 		var board;
 		var numBubbles;
+		var bubbles = [];
 		var MAX_BUBBLES = 70;
+		var requestAnimationID;
 
 		this.init = function () {
-			$(".but_start_game").bind("click", startGame);
+			if(BubbleShoot.Renderer){
+				BubbleShoot.Renderer.init(function () {
+					$(".but_start_game").bind("click", startGame);
+				});
+			}else{
+				$(".but_start_game").bind("click", startGame);
+			}
+		};
+
+		var renderFrame = function () {
+			BubbleShoot.Renderer.render(bubbles);
+			requestAnimationID = setTimeout(renderFrame, 40);
 		};
 
 		var startGame = function () {
 			$(".but_start_game").unbind("click");
 			numBubbles = MAX_BUBBLES;
 			BubbleShoot.ui.hideDialog();
-			curBubble = getNextBubble();
 			board = new BubbleShoot.Board();
-			BubbleShoot.ui.drawBoard(board);
+			bubbles = board.getBubbles();
+
+			if(BubbleShoot.Renderer){
+				if(!requestAnimationID){
+					requestAnimationID = setTimeout(renderFrame, 40);
+				}
+			}else{
+				BubbleShoot.ui.drawBoard(board);
+			}
+
+			curBubble = getNextBubble();
 			$("#game").bind("click", clickGameScreen);
 		};
 
 		var getNextBubble = function () {
 			var bubble = BubbleShoot.Bubble.create();
+			bubbles.push(bubble);
+			bubble.setState(BubbleShoot.BubbleState.CURRENT);
 			bubble.getSprite().addClass("cur_bubble");
+
+			var top = 470;
+			var left = ($("#board").width() - BubbleShoot.ui.BUBBLE_DIMS) / 2;
+			bubble.getSprite().css({
+				top : top,
+				left : left
+			});
+
 			$("#board").append(bubble.getSprite());
 			BubbleShoot.ui.drawBubblesRemaining(numBubbles);
 			numBubbles--;
@@ -67,7 +99,11 @@ BubbleShoot.Game = (function ($) {
 			$.each(bubbles, function () {
 				var bubble = this;
 				setTimeout(function () {
+					bubble.setState(BubbleShoot.BubbleState.POPPING);
 					bubble.animatePop();
+					setTimeout(function () {
+						bubble.setState(BubbleShoot.BubbleState.POPPED);
+					}, 200);
 				}, delay);
 				board.popBubbleAt(this.getRow(), this.getCol());
 				setTimeout(function () {
@@ -82,7 +118,13 @@ BubbleShoot.Game = (function ($) {
 				var bubble = this;
 				board.popBubbleAt(bubble.getRow(), bubble.getCol());
 				setTimeout(function () {
-					bubble.getSprite().kaboom();
+					bubble.setState(BubbleShoot.BubbleState.FALLING);
+					bubble.getSprite().kaboom({
+						callback : function () {
+							bubble.getSprite().remove();
+							bubble.setState(BubbleShoot.BubbleState.FALLEN);
+						}
+					})
 				}, delay);
 			});
 		};

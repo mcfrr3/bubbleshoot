@@ -115,3 +115,7 @@ body{
 	-o-transform: scale(1.1);
 	transform: scale(1.1);
 }
+.game_canvas{
+	width: 1000px;
+	height: 620px;
+}
