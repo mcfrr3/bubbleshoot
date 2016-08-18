@@ -30,6 +30,26 @@ BubbleShoot.Renderer = (function ($) {
 					top : bubble.getType() * BUBBLE_IMAGE_DIM,
 					left : 0
 				};
+
+				switch (bubble.getState()){
+					case BubbleShoot.BubbleState.POPPING:
+						var timeInState = bubble.getTimeInState();
+
+						if(timeInState < 80){
+							clip.left = BUBBLE_IMAGE_DIM;
+						}else if(timeInState < 140){
+							clip.left = BUBBLE_IMAGE_DIM * 2;
+						}else{
+							clip.left = BUBBLE_IMAGE_DIM * 3;
+						}
+						break;
+					case BubbleShoot.BubbleState.POPPED:
+						return;
+					case BubbleShoot.BubbleState.FIRED:
+						return;
+					case BubbleShoot.BubbleState.FALLEN:
+						return;
+				}
 				Renderer.drawSprite(bubble.getSprite(), clip);
 			});
 			context.translate(-120,0);
