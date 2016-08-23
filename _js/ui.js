@@ -36,7 +36,7 @@ BubbleShoot.ui = (function ($) {
 		fireBubble : function (bubble, coords, duration) {
 			bubble.setState(BubbleShoot.BubbleState.FIRING);
 			var complete = function () {
-				if(typeof(bubble.getRow()) !== undefined){
+				if(typeof(bubble.getRow()) !== 'undefined'){
 					bubble.getSprite().css(Modernizr.prefixed("transition"),"");
 					bubble.getSprite().css({
 						left : bubble.getCoords().left - ui.BUBBLE_DIMS / 2,
@@ -106,6 +106,7 @@ BubbleShoot.ui = (function ($) {
 		},
 		endGame : function (hasWon, score) {
 			$("#game").unbind("click");
+			$("#game").unbind("mousmove");
 			BubbleShoot.ui.drawBubblesRemaining(0);
 
 			if(hasWon){

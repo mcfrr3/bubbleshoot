@@ -7,7 +7,7 @@ BubbleShoot.Game = (function ($) {
 		var numBubbles;
 		var bubbles = [];
 		var MAX_BUBBLES = 70;
-		var POINTS_PER_BUBBLE = 70;
+		var POINTS_PER_BUBBLE = 50;
 		var MAX_ROWS = 11;
 		var level = 0;
 		var score = 0;
@@ -17,10 +17,10 @@ BubbleShoot.Game = (function ($) {
 		this.init = function () {
 			if(BubbleShoot.Renderer){
 				BubbleShoot.Renderer.init(function () {
-					$(".but_start_game").bind("click", startGame);
+					$(".but_start_game").on("click", startGame);
 				});
 			}else{
-				$(".but_start_game").bind("click", startGame);
+				$(".but_start_game").on("click", startGame);
 			}
 
 			if(window.localStorage && localStorage.getItem("high_score")){
@@ -28,41 +28,6 @@ BubbleShoot.Game = (function ($) {
 			}
 
 			BubbleShoot.ui.drawHighScore(highScore);
-		};
-
-		var renderFrame = function () {
-			$.each(bubbles, function () {
-				if(this.getSprite().updateFrame){
-					this.getSprite().updateFrame();
-				}
-			});
-			BubbleShoot.Renderer.render(bubbles);
-			requestAnimationID = requestAnimationFrame(renderFrame);
-		};
-
-		var endGame = function (hasWon) {
-			if(score > highScore){
-				highScore = score;
-				$("#new_high_score").show();
-				BubbleShoot.ui.drawHighScore(highScore);
-
-				if(window.localStorage){
-					localStorage.setItem("high_score", highScore);
-				}
-			}else{
-				$("#new_high_score").hide();
-			}
-
-			if(hasWon){
-				level++;
-			}else{
-				score = 0;
-				level = 0;
-			}
-
-			$(".but_start_game").click("click", startGame);
-			$("#board, .bubble").remove();
-			BubbleShoot.ui.endGame(hasWon, score);
 		};
 
 		var startGame = function () {
@@ -108,7 +73,7 @@ BubbleShoot.Game = (function ($) {
 		var clickGameScreen = function (e) {
 			var angle = BubbleShoot.ui.getBubbleAngle(curBubble.getSprite(), e);
 			//var angle = getBubbleAngle(e);
-			var bubble = $("#bubble");
+			//var bubble = $("#bubble");
 			var duration = 750;
 			var distance = 1000;
 			var collision = BubbleShoot.CollisionDetector.findIntersection(curBubble, board, angle);
@@ -167,8 +132,6 @@ BubbleShoot.Game = (function ($) {
 			}else{
 				curBubble = getNextBubble(board);
 			}
-
-			curBubble = getNextBubble();
 		};
 
 		var popBubbles = function (bubbles, delay) {
@@ -204,6 +167,42 @@ BubbleShoot.Game = (function ($) {
 				}, delay);
 			});
 		};
+
+		var renderFrame = function () {
+			$.each(bubbles, function () {
+				if(this.getSprite().updateFrame){
+					this.getSprite().updateFrame();
+				}
+			});
+			BubbleShoot.Renderer.render(bubbles);
+			requestAnimationID = requestAnimationFrame(renderFrame);
+		};
+
+		var endGame = function (hasWon) {
+			if(score > highScore){
+				highScore = score;
+				$("#new_high_score").show();
+				BubbleShoot.ui.drawHighScore(highScore);
+
+				if(window.localStorage){
+					localStorage.setItem("high_score", highScore);
+				}
+			}else{
+				$("#new_high_score").hide();
+			}
+
+			if(hasWon){
+				level++;
+			}else{
+				score = 0;
+				level = 0;
+			}
+
+			$(".but_start_game").click("click", startGame);
+			$("#board .bubble").remove();
+			BubbleShoot.ui.endGame(hasWon, score);
+		};
+
 	};
 
 	window.requestAnimationFrame = Modernizr.prefixed("requestAnimationFrame",

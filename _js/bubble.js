@@ -4,7 +4,7 @@ BubbleShoot.Bubble = (function ($) {
 	BubbleShoot.BubbleState = {
 		CURRENT : 1,
 		ON_BOARD : 2,
-		FIRING: 3,
+		FIRING : 3,
 		POPPING : 4,
 		FALLING : 5,
 		POPPED : 6,
@@ -67,7 +67,7 @@ BubbleShoot.Bubble = (function ($) {
 	};
 
 	Bubble.create = function (rowNum, colNum, type) {
-		if(!type){
+		if(type === undefined){
 			type = Math.floor(Math.random() * 4);
 		}
 
@@ -79,6 +79,8 @@ BubbleShoot.Bubble = (function ($) {
 			var sprite = new BubbleShoot.Sprite();
 		}
 
+		sprite.addClass("bubble");
+		sprite.addClass("bubble_" + type);
 		var bubble = new Bubble(rowNum, colNum, type, sprite);
 		return bubble;
 	};

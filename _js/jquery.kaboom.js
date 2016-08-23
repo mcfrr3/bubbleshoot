@@ -7,7 +7,6 @@
 	var prevTime;
 
 	jQuery.fn.kaboom = function (settings) {
-		var elm = this;
 		var config = $.extend({}, defaults, settings);
 
 		if(toMove.length == 0){
